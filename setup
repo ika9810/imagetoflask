@@ -1,0 +1,68 @@
+#!/bin/bash
+
+if command -v python3 &>/dev/null; then
+    python_install="false"
+else
+    python_install="true"
+fi
+
+OS=`uname`
+updated="false"
+
+if [ $python_install == "false" ]; then
+    if [ $OS == "Darwin" ]; then
+        updated="true"
+        brew update
+        brew install python3
+    fi
+
+    if [ $OS == "Linux" ]; then
+        updated="true"
+        apt update
+        apt install python3
+    fi
+fi
+
+pip3 install flask || pip install flask
+
+if command -v vim &>/dev/null; then
+    vim_install="false"
+else
+    vim_install="true"
+fi
+
+if [ $vim_install == "false" ]; then
+    if [ $OS == "Linux" ]; then
+        if [ $updated == "false"]; then
+            updated="true"
+            apt update
+        fi
+        apt install vim
+    fi
+
+    if [ $OS == "Darwin" ]; then
+        if [ $updated == "false"]; then
+            updated="true"
+            brew update
+        fi
+        brew install vim
+    fi
+fi
+
+echo "set nu  
+set autoindent
+set cindent
+set ts=4
+set shiftwidth=4
+set laststatus=2
+set paste
+set smarttab
+set smartindent
+set tabstop=4
+set expandtab
+set fencs=utf-8,euckr
+set ai" > $HOME/.vimrc
+
+source $HOME/.vimrc
+
+echo "install finished"
